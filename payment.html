@@ -90,6 +90,15 @@
             text-align: center;
             width: 80px;
             flex-shrink: 0;
+            cursor: pointer; /* ADDED */
+            padding: 8px; /* ADDED */
+            border-radius: 12px; /* ADDED */
+        }
+
+        /* ADDED — highlight when selected */
+        .pay-item.selected {
+            border: 2px solid #b3006b;
+            background: #ffe6f3;
         }
 
         .pay-item img {
@@ -160,22 +169,22 @@
 
     <div class="payment-box">
         <div class="payment-options">
-            <div class="pay-item" onclick="selectUPIApp('upi')">
+            <div class="pay-item" onclick="selectUPIApp(this, 'upi')">
                 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968841.png">
                 <p>Pay by any UPI</p>
             </div>
 
-            <div class="pay-item" onclick="selectUPIApp('gpay')">
+            <div class="pay-item" onclick="selectUPIApp(this, 'gpay')">
                 <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png">
                 <p>Google Pay</p>
             </div>
 
-            <div class="pay-item" onclick="selectUPIApp('phonepe')">
+            <div class="pay-item" onclick="selectUPIApp(this, 'phonepe')">
                 <img src="https://cdn-icons-png.flaticon.com/512/825/825454.png">
                 <p>PhonePe</p>
             </div>
 
-            <div class="pay-item" onclick="selectUPIApp('paytm')">
+            <div class="pay-item" onclick="selectUPIApp(this, 'paytm')">
                 <img src="https://cdn-icons-png.flaticon.com/512/825/825500.png">
                 <p>Paytm</p>
             </div>
@@ -183,7 +192,7 @@
     </div>
 
     <div class="pay-list-box">
-        <div class="pay-row" onclick="selectUPIApp('upi')">Pay by UPI ID / QR <span>&#8250;</span></div>
+        <div class="pay-row" onclick="selectUPIApp(this, 'upi')">Pay by UPI ID / QR <span>&#8250;</span></div>
         <div class="pay-row">Card</div>
         <div class="pay-row">Net Banking</div>
     </div>
@@ -215,22 +224,38 @@
 
         calculateAmount();
 
-        // SELECTED UPI METHOD
-        function selectUPIApp(method) {
+        // UPDATED: ADD highlight + select method
+        function selectUPIApp(el, method) {
             selectedUPIMethod = method;
+
+            document.querySelectorAll(".pay-item").forEach(item =>
+                item.classList.remove("selected")
+            );
+
+            if (el.classList.contains("pay-item")) {
+                el.classList.add("selected");
+            }
         }
 
-        // PROCEED TO UPI PAYMENT
+        // UPDATED: OPEN SPECIFIC UPI APP
         function proceedToUPI() {
-            let upiId = "7992479332@ybl"; // <-- Replace with your UPI ID
+            let upiId = "7992479332@ybl"; 
             let name = "Priyanshu Raj";
 
-            let url =
-                `upi://pay?pa=${upiId}` +
-                `&pn=${name}` +
-                `&am=${amount}` +
-                `&cu=INR` +
-                `&tn=Order%20Payment`;
+            let url = "";
+
+            if (selectedUPIMethod === "gpay") {
+                url = `tez://upi/pay?pa=${upiId}&pn=${name}&am=${amount}&cu=INR&tn=Order%20Payment`;
+            }
+            else if (selectedUPIMethod === "phonepe") {
+                url = `phonepe://upi/pay?pa=${upiId}&pn=${name}&am=${amount}&cu=INR&tn=Order%20Payment`;
+            }
+            else if (selectedUPIMethod === "paytm") {
+                url = `paytm://upi/pay?pa=${upiId}&pn=${name}&am=${amount}&cu=INR&tn=Order%20Payment`;
+            }
+            else {
+                url = `upi://pay?pa=${upiId}&pn=${name}&am=${amount}&cu=INR&tn=Order%20Payment`;
+            }
 
             window.location.href = url;
         }
