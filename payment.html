@@ -90,9 +90,12 @@
             text-align: center;
             width: 80px;
             flex-shrink: 0;
-            cursor: pointer; /* ADDED */
-            padding: 8px; /* ADDED */
-            border-radius: 12px; /* ADDED */
+            cursor: pointer;
+            /* ADDED */
+            padding: 8px;
+            /* ADDED */
+            border-radius: 12px;
+            /* ADDED */
         }
 
         /* ADDED — highlight when selected */
@@ -206,7 +209,6 @@
         let selectedUPIMethod = "upi";
         let amount = 0;
 
-        // AUTO LOAD AMOUNT LIKE CHECKOUT PAGE
         function calculateAmount() {
             try {
                 let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
@@ -224,7 +226,6 @@
 
         calculateAmount();
 
-        // UPDATED: ADD highlight + select method
         function selectUPIApp(el, method) {
             selectedUPIMethod = method;
 
@@ -237,9 +238,9 @@
             }
         }
 
-        // UPDATED: OPEN SPECIFIC UPI APP
+
         function proceedToUPI() {
-            let upiId = "7992479332@ybl"; 
+            let upiId = "7992479332@ybl";
             let name = "Priyanshu Raj";
 
             let url = "";
@@ -258,6 +259,10 @@
             }
 
             window.location.href = url;
+
+            setTimeout(() => {
+                window.location.href = "order-confirmed.html";
+            }, 3000);
         }
     </script>
 
