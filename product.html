@@ -51,7 +51,7 @@
         .header-logo-text {
             font-size: 20px;
             font-weight: 600;
-            color: #b089c7;
+            color: #b3006b;
             letter-spacing: 0.5px;
         }
 
@@ -491,7 +491,7 @@
         /* Bottom bar (fixed) */
         .bottom-bar {
             position: fixed;
-            bottom: 20px;
+            bottom: 40px;
             left: 0;
             right: 0;
             background: #fff;
@@ -545,6 +545,105 @@
             opacity: 1;
             pointer-events: auto;
         }
+/* 
+        below product for you section */
+
+
+        .p-img-row {
+    display: flex;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.p-img {
+    width: 50%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.product-card-body {
+    padding: 8px;
+    font-family: system-ui;
+}
+
+.product-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    height: 36px;
+    overflow: hidden;
+}
+
+.product-card-price {
+    font-size: 15px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.price-now {
+    font-weight: 700;
+    color: #000;
+}
+
+.product-card-old {
+    font-size: 12px;
+    text-decoration: line-through;
+    color: #888;
+}
+
+.pc-discount {
+    font-size: 12px;
+    color: green;
+    font-weight: 600;
+}
+
+.pc-offer {
+    margin-top: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background: #e3f8e5;
+    color: green;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.pc-delivery {
+    margin-top: 5px;
+    font-size: 13px;
+    color: #444;
+}
+
+.pc-footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.pc-rating {
+    background: #e0f7e9;
+    color: green;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.pc-reviews {
+    color: #777;
+}
+
+.pc-trust {
+    margin-left: auto;
+    font-size: 11px;
+    padding: 3px 6px;
+    background: #ffe4f1;
+    color: #b6008f;
+    border-radius: 10px;
+}
+
     </style>
 </head>
 
@@ -687,6 +786,8 @@
         </button>
     </div>
 
+
+
     <script>
         const CART_KEY = 'wd_cart_v1';
 
@@ -703,7 +804,6 @@
 
             currentProduct = products.find(p => p.id === id) || products[0];
 
-            // convert JSON format to what your page expects
             currentProduct.image = currentProduct.img1;
             currentProduct.sizes = ["S", "M", "L", "XL", "XXL"];
 
@@ -719,6 +819,9 @@
             loadCart();
             loadProductFromJSON();
             renderCart();
+
+            /* ⭐ NEW — BACK BUTTON FUNCTIONALITY */
+            document.querySelector(".back-icon").onclick = () => history.back();
         });
 
 
@@ -735,7 +838,6 @@
             if (!currentProduct) return;
 
             img.src = currentProduct.image;
-            // Generate 4 thumbnails same as main image
             const thumbStrip = document.getElementById("thumbStrip");
             thumbStrip.innerHTML = "";
 
@@ -744,8 +846,8 @@
                 div.className = "thumb-item";
 
                 div.innerHTML = `
-    <img src="${currentProduct.image}" />
-  `;
+                <img src="${currentProduct.image}" />
+            `;
 
                 div.onclick = () => {
                     document.getElementById("mainImage").src = currentProduct.image;
@@ -770,31 +872,59 @@
             });
 
             selectedSize = null;
-        }
 
+            /* ⭐ NEW — AUTO-SELECT FIRST SIZE (S) */
+            setTimeout(() => {
+                const firstBtn = document.querySelector(".size-btn");
+                if (firstBtn) {
+                    firstBtn.classList.add("active");
+                    selectedSize = firstBtn.textContent;
+                }
+            }, 50);
+        }
         function renderProductsList() {
             const list = document.getElementById('productsList');
             list.innerHTML = '';
 
-            // show ONLY first 4 products
             products.slice(0, 4).forEach(prod => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.onclick = () => openProduct(prod.id);
 
                 card.innerHTML = `
-      <img src="${prod.image}" alt="${prod.title}" />
-      <div class="product-card-body">
-        <div class="product-card-title">${prod.title}</div>
-        <div class="product-card-price">₹${prod.price}
-          <span class="product-card-old">₹${prod.oldPrice}</span>
-        </div>
-      </div>
-    `;
+            <div class="p-img-row">
+                <img src="${prod.img1}" class="p-img" />
+                <img src="${prod.img2}" class="p-img" />
+            </div>
+
+            <div class="product-card-body">
+                
+                <div class="product-card-title">${prod.title}</div>
+
+                <div class="product-card-price">
+                    <span class="price-now">₹${prod.price}</span>
+                    <span class="product-card-old">₹${prod.oldPrice}</span>
+                    <span class="pc-discount">${prod.discount}% off</span>
+                </div>
+
+                <div class="pc-offer">₹ ${prod.offerPrice} with ${prod.offers} Special Offers</div>
+                <div class="pc-delivery">Free Delivery</div>
+
+                <div class="pc-footer">
+                    <span class="pc-rating">${prod.rating} ★</span>
+                    <span class="pc-reviews">(${prod.reviews})</span>
+                    <span class="pc-trust">Trusted</span>
+                </div>
+
+            </div>
+        `;
 
                 list.appendChild(card);
             });
         }
+
+
+
 
 
         function openProduct(id) {
@@ -811,8 +941,8 @@
             if (btnEl) btnEl.classList.add('active');
         }
 
-        /* CART LOGIC */
 
+        /* CART LOGIC */
         function addToCart() {
             if (!selectedSize) {
                 alert('Please select a size first');
@@ -838,7 +968,7 @@
 
             saveCart();
             renderCart();
-            openCart();   // Meesho-like: show cart after add
+            openCart();
         }
 
         function buyNow() {
@@ -846,9 +976,8 @@
                 alert('Please select a size first');
                 return;
             }
-
-            addToCart(); // Save item in localStorage
-            window.location.href = "checkout.html"; // Redirect to new page
+            addToCart();
+            window.location.href = "checkout.html";
         }
 
 
@@ -889,19 +1018,19 @@
                 row.className = 'cart-item';
 
                 row.innerHTML = `
-      <img src="${item.img}" alt="${item.title}" />
-      <div class="cart-item-info">
-        <div class="cart-item-title">${item.title}</div>
-        <div>₹${item.price} <span style="text-decoration:line-through; color:#888; font-size:11px;">₹${item.price + 800}</span></div>
-        <div>Size: ${item.size}</div>
-        <div class="cart-qty-box">
-          <button class="cart-qty-btn" onclick="changeQty(${i}, 'dec')">-</button>
-          <span class="cart-qty-value">${item.qty}</span>
-          <button class="cart-qty-btn" onclick="changeQty(${i}, 'inc')">+</button>
-        </div>
-        <div class="cart-remove" onclick="removeItem(${i})">Remove</div>
-      </div>
-    `;
+                <img src="${item.img}" alt="${item.title}" />
+                <div class="cart-item-info">
+                    <div class="cart-item-title">${item.title}</div>
+                    <div>₹${item.price} <span style="text-decoration:line-through; color:#888; font-size:11px;">₹${item.price + 800}</span></div>
+                    <div>Size: ${item.size}</div>
+                    <div class="cart-qty-box">
+                        <button class="cart-qty-btn" onclick="changeQty(${i}, 'dec')">-</button>
+                        <span class="cart-qty-value">${item.qty}</span>
+                        <button class="cart-qty-btn" onclick="changeQty(${i}, 'inc')">+</button>
+                    </div>
+                    <div class="cart-remove" onclick="removeItem(${i})">Remove</div>
+                </div>
+            `;
 
                 box.appendChild(row);
             });
@@ -918,6 +1047,7 @@
         function updateCartBadge() {
             const badge = document.getElementById('cartCount');
             const count = cart.reduce((sum, item) => sum + item.qty, 0);
+
             if (count > 0) {
                 badge.style.display = 'flex';
                 badge.textContent = count;
@@ -939,9 +1069,7 @@
         function saveCart() {
             try {
                 localStorage.setItem(CART_KEY, JSON.stringify(cart));
-            } catch (e) {
-                console.warn('Could not save cart', e);
-            }
+            } catch (e) { }
         }
 
         function loadCart() {
@@ -955,12 +1083,9 @@
             }
         }
 
-        /* UPI PAYMENT */
-
         function goToCheckout() {
             window.location.href = "checkout.html";
         }
-
     </script>
 
 </body>

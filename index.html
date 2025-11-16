@@ -315,6 +315,11 @@
                 <p>Women Clothing</p>
             </div>
 
+            <div class="cat">
+                <div class="avatar"><img src="img/model.jpg"></div>
+                <p>Westen wear</p>
+            </div>
+
         </div>
 
         <div class="brand-banner">
@@ -332,11 +337,11 @@
         <div class="promo-strip">
             <div id="marqueeText">Buy 2 Get 1 Free (Add 3 item to cart)</div>
         </div>
-
         <div class="deals">
             <h4 style="color:var(--accent)">Meesho Daily Deals ⚡</h4>
-            <div class="timer">💣 01h : 09m : 44s</div>
+            <div class="timer" id="dealTimer">💣 01h : 09m : 44s</div>
         </div>
+
 
         <div class="section-title">Products For You</div>
 
@@ -345,6 +350,8 @@
     </div>
 
     <script>
+
+
         /* AUTO CAROUSEL */
         (function () {
             const slider = document.getElementById('cSlide');
@@ -414,7 +421,34 @@
         function openProduct(id) {
             window.location.href = "product.html?id=" + id;
         }
+
+
+        (function () {
+            const el = document.getElementById('dealTimer');
+
+            const START_TIME = (1 * 3600) + (9 * 60) + 44;
+            let seconds = START_TIME;
+
+            function formatTime(sec) {
+                const h = String(Math.floor(sec / 3600)).padStart(2, '0');
+                sec %= 3600;
+                const m = String(Math.floor(sec / 60)).padStart(2, '0');
+                const s = String(sec % 60).padStart(2, '0');
+                return `💣 ${h}h : ${m}m : ${s}s`;
+            }
+
+            el.textContent = formatTime(seconds);
+
+            setInterval(() => {
+                seconds--;
+                if (seconds < 0) seconds = START_TIME;
+                el.textContent = formatTime(seconds);
+            }, 1000);
+        })();
+
+
     </script>
+
 
 </body>
 
